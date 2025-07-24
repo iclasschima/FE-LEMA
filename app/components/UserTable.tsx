@@ -6,6 +6,7 @@ import Link from "next/link"; // Use Next.js Link for navigation
 
 // Import icons for pagination arrows (assuming react-icons is installed)
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
+import LoadingSpinner from "./LoadingSpinner";
 
 interface UserTableProps {
   users: User[];
@@ -15,6 +16,7 @@ interface UserTableProps {
   onSort: (key: keyof User) => void;
   sortKey: keyof User;
   sortOrder: "asc" | "desc";
+  isLoading?: boolean;
 }
 
 const UserTable: React.FC<UserTableProps> = ({
@@ -25,6 +27,7 @@ const UserTable: React.FC<UserTableProps> = ({
   onSort,
   sortKey,
   sortOrder,
+  isLoading,
 }) => {
   const getPaginationPages = () => {
     const pages = [];
@@ -107,7 +110,13 @@ const UserTable: React.FC<UserTableProps> = ({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {users.length > 0 ? (
+            {isLoading ? (
+              <tr>
+                <td className="px-6 py-4 text-center" colSpan={3}>
+                  <LoadingSpinner />
+                </td>
+              </tr>
+            ) : users.length > 0 ? (
               users.map((user) => (
                 <tr
                   key={user.id}

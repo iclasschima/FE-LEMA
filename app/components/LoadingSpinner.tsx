@@ -1,10 +1,22 @@
-// frontend/components/LoadingSpinner.tsx
 import React from "react";
 
-const LoadingSpinner: React.FC = () => {
+const LoadingSpinner = ({
+  isLoadingFullScreen = false,
+}: {
+  isLoadingFullScreen?: boolean;
+}) => {
   return (
-    <div className="flex justify-center items-center h-full min-h-screen">
-      <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
+    <div
+      className={`flex justify-center items-center h-full  ${
+        isLoadingFullScreen ? "min-h-screen" : "min-h-[300px]"
+      }`}
+    >
+      <div className="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </div>
   );
 };

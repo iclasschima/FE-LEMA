@@ -38,7 +38,6 @@ const UsersPage: React.FC = () => {
     }
   };
 
-  if (isLoading) return <LoadingSpinner />;
   if (isError)
     return <ErrorMessage message={error?.message || "Failed to load users."} />;
 
@@ -53,6 +52,7 @@ const UsersPage: React.FC = () => {
         onSort={handleSort}
         sortKey={sortKey}
         sortOrder={sortOrder}
+        isLoading={isLoading}
       />
     </div>
   );

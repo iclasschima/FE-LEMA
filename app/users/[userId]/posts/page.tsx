@@ -51,7 +51,7 @@ const UserPostsPage: React.FC = () => {
     }
   };
 
-  if (isLoadingPosts) return <LoadingSpinner />;
+  if (isLoadingPosts) return <LoadingSpinner isLoadingFullScreen />;
   if (isErrorPosts)
     return (
       <ErrorMessage message={postsError?.message || "Failed to load posts."} />
