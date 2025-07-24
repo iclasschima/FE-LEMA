@@ -1,6 +1,5 @@
-// frontend/hooks/index.ts
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getUsers, getUserPosts, deletePost } from "../lib/api"; // Changed import path
+import { getUsers, getUserPosts, deletePost } from "../lib/api";
 import { AxiosError } from "axios";
 
 export const useUsers = (page: number, limit: number) => {

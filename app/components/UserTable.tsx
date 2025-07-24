@@ -1,10 +1,8 @@
-// frontend/components/UserTable.tsx
 import React from "react";
 import { User } from "../types";
-import { formatAddress } from "../lib/formatters"; // Make sure this path is correct for your Next.js setup
-import Link from "next/link"; // Use Next.js Link for navigation
+import { formatAddress } from "../lib/formatters";
+import Link from "next/link";
 
-// Import icons for pagination arrows (assuming react-icons is installed)
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import LoadingSpinner from "./LoadingSpinner";
 

@@ -1,8 +1,7 @@
-// frontend/app/layout.tsx
 import type { Metadata } from "next";
-import { Inter } from "next/font/google"; // Import Inter font
-import "./globals.css"; // Your global Tailwind CSS
-import Providers from "./providers"; // Your React Query Providers
+import { Inter } from "next/font/google";
+import "./globals.css";
+import Providers from "./providers";
 
 // Define the Inter font instance
 const inter = Inter({ subsets: ["latin"] });

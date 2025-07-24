@@ -1,4 +1,3 @@
-// frontend/lib/api.ts
 import axios from "axios";
 import { ApiResponse, Post, User } from "../types";
 
