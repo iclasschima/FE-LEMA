@@ -1,7 +1,6 @@
 "use client";
 import React, { useState, useMemo } from "react";
 import UserTable from "./components/UserTable";
-import LoadingSpinner from "./components/LoadingSpinner";
 import ErrorMessage from "./components/ErrorMessage";
 import { useUsers } from "./hooks";
 import { User } from "./types";

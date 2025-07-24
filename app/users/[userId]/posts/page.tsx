@@ -1,4 +1,3 @@
-// frontend/app/users/[userId]/posts/page.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -7,9 +6,7 @@ import { useUserPosts, useDeletePost } from "@/app/hooks";
 import LoadingSpinner from "@/app/components/LoadingSpinner";
 import ErrorMessage from "@/app/components/ErrorMessage";
 import PostListItem from "@/app/components/PostListItem";
-import { useQueryClient } from "@tanstack/react-query";
 
-// Import icons
 import { IoIosArrowBack } from "react-icons/io";
 import { FaPlus } from "react-icons/fa";
 
@@ -17,14 +14,12 @@ const UserPostsPage: React.FC = () => {
   const params = useParams();
   const userId = params.userId as string;
   const router = useRouter();
-  const queryClient = useQueryClient();
   const searchParams = useSearchParams();
 
   const userName = searchParams.get("name") || "";
   const userEmail = searchParams.get("email") || "";
 
-  // We'll still use pagination internally to fetch data, but not show controls in UI
-  const [page, setPage] = useState(1);
+  const [page] = useState(1);
   const postsLimit = 20;
 
   const {
