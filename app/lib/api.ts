@@ -29,3 +29,16 @@ export const deletePost = async (postId: number): Promise<void> => {
   const response = await axios.delete(`${API_BASE_URL}/posts/${postId}`);
   return response.data;
 };
+
+export const createPost = async (
+  userId: string,
+  title: string,
+  body: string
+): Promise<Post> => {
+  const response = await axios.post(`${API_BASE_URL}/posts`, {
+    userId,
+    title,
+    body,
+  });
+  return response.data;
+};

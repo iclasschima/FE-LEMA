@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { getUsers, getUserPosts, deletePost } from "../lib/api";
+import { getUsers, getUserPosts, deletePost, createPost } from "../lib/api";
 import { AxiosError } from "axios";
 
 export const useUsers = (page: number, limit: number) => {
@@ -26,7 +26,29 @@ export const useDeletePost = () => {
     },
     onError: (error: AxiosError) => {
       console.error("Error deleting post:", error);
-      alert(`Failed to delete post: ${error.message || "Unknown error"}`);
+      return error;
+    },
+  });
+};
+
+export const useCreatePost = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      userId,
+      title,
+      body,
+    }: {
+      userId: string;
+      title: string;
+      body: string;
+    }) => createPost(userId, title, body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["userPosts"] });
+    },
+    onError: (error: AxiosError) => {
+      console.error("Error creating post:", error);
+      return error;
     },
   });
 };

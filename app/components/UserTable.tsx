@@ -1,9 +1,9 @@
 import React from "react";
 import { User } from "../types";
 import { formatAddress } from "../lib/formatters";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { BsArrowRight, BsArrowLeft } from "react-icons/bs";
 
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import LoadingSpinner from "./LoadingSpinner";
 
 interface UserTableProps {
@@ -23,27 +23,25 @@ const UserTable: React.FC<UserTableProps> = ({
   totalPages,
   onPageChange,
   onSort,
-  sortKey,
-  sortOrder,
   isLoading,
 }) => {
+  const router = useRouter();
+
   const getPaginationPages = () => {
     const pages = [];
-    const maxPagesToShow = 5; // e.g., 1 ... 4 5 [6] 7 8 ... 10
+    const maxPagesToShow = 5;
 
     if (totalPages <= maxPagesToShow) {
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      pages.push(1); // Always show first page
+      pages.push(1);
 
       if (currentPage > maxPagesToShow - 2) {
-        // Show ellipsis if current page is far from beginning
         pages.push("...");
       }
 
-      // Calculate start and end for middle block of pages
       let startPage = Math.max(
         2,
         currentPage - Math.floor(maxPagesToShow / 2) + 1
@@ -53,12 +51,10 @@ const UserTable: React.FC<UserTableProps> = ({
         currentPage + Math.floor(maxPagesToShow / 2) - 1
       );
 
-      // Adjust if startPage is too close to 1
       if (currentPage <= Math.floor(maxPagesToShow / 2) + 1) {
         startPage = 2;
         endPage = maxPagesToShow - 1;
       }
-      // Adjust if endPage is too close to totalPages
       if (currentPage >= totalPages - Math.floor(maxPagesToShow / 2)) {
         startPage = totalPages - maxPagesToShow + 2;
         endPage = totalPages - 1;
@@ -66,13 +62,11 @@ const UserTable: React.FC<UserTableProps> = ({
 
       for (let i = startPage; i <= endPage; i++) {
         if (i > 1 && i < totalPages) {
-          // Avoid duplicating 1 or totalPages if already added
           pages.push(i);
         }
       }
 
       if (currentPage < totalPages - (maxPagesToShow - 2)) {
-        // Show ellipsis if current page is far from end
         pages.push("...");
       }
 
@@ -84,23 +78,22 @@ const UserTable: React.FC<UserTableProps> = ({
   };
 
   return (
-    <div className="bg-white overflow-hidden ">
+    <div className="bg-white overflow-hidden">
       <div className="overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 border border-gray-200 rounded-lg">
           <thead className="bg-gray-50">
             <tr>
               <th
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer select-none"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-600 cursor-pointer select-none"
                 onClick={() => onSort("name")}
               >
-                Full Name{" "}
-                {sortKey === "name" && (sortOrder === "asc" ? "▲" : "▼")}
+                Full Name
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-600">
                 Email Address
               </th>
               <th
-                className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                className="px-6 py-3 text-left text-xs font-medium text-gray-600"
                 style={{ width: "500px", minWidth: "280px" }}
               >
                 Address
@@ -119,39 +112,25 @@ const UserTable: React.FC<UserTableProps> = ({
                 <tr
                   key={user.id}
                   className="hover:bg-blue-50 transition-colors duration-150 cursor-pointer"
+                  onClick={() =>
+                    router.push(
+                      `/users/${user.id}/posts?name=${encodeURIComponent(
+                        user.name
+                      )}&email=${encodeURIComponent(user.email)}`
+                    )
+                  }
                 >
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                    <Link
-                      href={{
-                        pathname: `/users/${user.id}/posts`,
-                        query: { name: user.name, email: user.email },
-                      }}
-                    >
-                      {user.name}
-                    </Link>
+                    {user.name}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                    <Link
-                      href={{
-                        pathname: `/users/${user.id}/posts`,
-                        query: { name: user.name, email: user.email },
-                      }}
-                    >
-                      {user.email}
-                    </Link>
+                    {user.email}
                   </td>
                   <td
                     className="px-6 py-4 text-sm text-gray-600 truncate"
                     style={{ maxWidth: "392px" }}
                   >
-                    <Link
-                      href={{
-                        pathname: `/users/${user.id}/posts`,
-                        query: { name: user.name, email: user.email },
-                      }}
-                    >
-                      {formatAddress(user.address)}
-                    </Link>
+                    {formatAddress(user.address)}
                   </td>
                 </tr>
               ))
@@ -166,19 +145,18 @@ const UserTable: React.FC<UserTableProps> = ({
         </table>
       </div>
 
-      {/* Pagination Controls */}
       {totalPages > 1 && (
         <div className="flex lg:justify-end">
           <div className="flex items-center justify-center space-x-2 py-4 px-6 border-t border-gray-200">
             <button
               onClick={() => onPageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="p-2 text-gray-500 hover:bg-gray-100 rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+              className="p-2 text-gray-600  hover:bg-gray-100 text-sm font-semibold rounded-full  disabled:cursor-not-allowed transition-colors flex items-center"
             >
-              <IoIosArrowBack className="mr-1" /> Previous
+              <BsArrowLeft className="mr-2 text-lg" /> Previous
             </button>
 
-            <div className="flex space-x-1">
+            <div className="flex space-x-2">
               {getPaginationPages().map((pageNumber, index) =>
                 typeof pageNumber === "string" ? (
                   <span
@@ -210,9 +188,9 @@ const UserTable: React.FC<UserTableProps> = ({
             <button
               onClick={() => onPageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="p-2 text-gray-500 hover:bg-gray-100 rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
+              className="p-2 text-gray-600 hover:bg-gray-100 text-sm font-semibold rounded-full disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center"
             >
-              Next <IoIosArrowForward className="ml-1" />
+              Next <BsArrowRight className="ml-2 text-lg" />
             </button>
           </div>
         </div>

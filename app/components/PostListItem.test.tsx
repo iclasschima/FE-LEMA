@@ -1,9 +1,8 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom"; // Import for extend-expect matchers
-
-import PostListItem from "./PostListItem"; // Adjust path if necessary
-import { Post } from "../types"; // Adjust path if necessary
+import "@testing-library/jest-dom";
+import PostListItem from "./PostListItem";
+import { Post } from "../types";
 
 describe("PostListItem", () => {
   const mockPost: Post = {
@@ -13,37 +12,25 @@ describe("PostListItem", () => {
     body: "This is the body of the test post. It contains some descriptive text.",
   };
 
-  const mockOnDelete = jest.fn(); // Create a mock function for onDelete
+  const mockOnDelete = jest.fn();
 
   beforeEach(() => {
-    // Clear any calls to the mock function before each test
     mockOnDelete.mockClear();
   });
 
   test("renders post title and body correctly", () => {
     render(<PostListItem post={mockPost} onDelete={mockOnDelete} />);
-
-    // Assert that the title is in the document
     expect(
       screen.getByRole("heading", { level: 3, name: mockPost.title })
     ).toBeInTheDocument();
-
-    // Assert that the body text is in the document
     expect(screen.getByText(mockPost.body)).toBeInTheDocument();
   });
 
   test("calls onDelete when the delete button is clicked", () => {
     render(<PostListItem post={mockPost} onDelete={mockOnDelete} />);
-
-    // Find the delete button by its accessible name (aria-label)
     const deleteButton = screen.getByLabelText(`Delete post ${mockPost.title}`);
-
-    // Simulate a click event on the button
     fireEvent.click(deleteButton);
-
-    // Assert that the mock onDelete function was called
     expect(mockOnDelete).toHaveBeenCalledTimes(1);
-    // Assert that it was called with the correct post ID
     expect(mockOnDelete).toHaveBeenCalledWith(mockPost.id);
   });
 
@@ -53,5 +40,45 @@ describe("PostListItem", () => {
       name: `Delete post ${mockPost.title}`,
     });
     expect(deleteButton).toBeInTheDocument();
+    expect(deleteButton).toHaveAttribute(
+      "aria-label",
+      `Delete post ${mockPost.title}`
+    );
+  });
+
+  test("truncates long body text correctly", () => {
+    const longBodyPost = {
+      ...mockPost,
+      body: "This is a very long body text that exceeds the truncation limit of 100 characters. It should be truncated.",
+    };
+    render(<PostListItem post={longBodyPost} onDelete={mockOnDelete} />);
+    expect(
+      screen.getByText((content, element) =>
+        content.includes(
+          "This is a very long body text that exceeds the truncation limit of 100 characters"
+        )
+      )
+    ).toBeInTheDocument();
+  });
+
+  test("does not truncate short body text", () => {
+    render(<PostListItem post={mockPost} onDelete={mockOnDelete} />);
+    expect(screen.getByText(mockPost.body)).toBeInTheDocument();
+  });
+
+  test("renders without crashing when post body is empty", () => {
+    const emptyBodyPost = { ...mockPost, body: "" };
+    render(<PostListItem post={emptyBodyPost} onDelete={mockOnDelete} />);
+    expect(
+      screen.getByRole("heading", { level: 3, name: mockPost.title })
+    ).toBeInTheDocument();
+    expect(screen.queryByText(mockPost.body)).not.toBeInTheDocument();
+  });
+
+  test("renders without crashing when post title is empty", () => {
+    const emptyTitlePost = { ...mockPost, title: "" };
+    render(<PostListItem post={emptyTitlePost} onDelete={mockOnDelete} />);
+    expect(screen.queryByRole("heading", { level: 3 })).not.toBeInTheDocument();
+    expect(screen.getByText(mockPost.body)).toBeInTheDocument();
   });
 });

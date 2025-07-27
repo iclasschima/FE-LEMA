@@ -41,8 +41,8 @@ const UsersPage: React.FC = () => {
     return <ErrorMessage message={error?.message || "Failed to load users."} />;
 
   return (
-    <div className="container mx-auto p-4 pt-14">
-      <h1 className="text-3xl font-bold mb-6 text-gray-800">Users</h1>
+    <div className="container mx-auto p-4 pt-14 max-w-[1200px]">
+      <h1 className="text-6xl font-medium mb-6 text-gray-800">Users</h1>
       <UserTable
         users={sortedUsers}
         currentPage={data?.pagination.page || 1}
